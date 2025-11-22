@@ -1,8 +1,11 @@
 ## Null Pointer Dereference in `coap_handle_request_put_block` due to uninitialized `last_token`
 
 **Affected Component:** `src/coap_block.c` (Function: `coap_handle_request_put_block`)
+
 **Affected Version:** libcoap 4.3.5 (and potentially earlier versions)
+
 **Vulnerability Type:** Null Pointer Dereference (CWE-476)
+
 **Impact:** Denial of Service (Server Crash)
 
 #### 1. Summary
