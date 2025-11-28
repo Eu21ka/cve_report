@@ -17,10 +17,10 @@ If a specific sequence of packets causes the server to determine that all blocks
 The vulnerability stems from a logical gap in how `last_token` is maintained during the lifecycle of a block-wise transfer:
 
 1.  When a new `lg_srcv` is allocated, it is zero-initialized, so `lg_srcv->last_token` is `NULL`.
-2.  The code has specific logic to update `last_token` for **Q-Block1** options (around line 170 in `src/coap_block.c`).
-3.  The code also updates `last_token` for standard **BLOCK1** options when it is the **last block** (`m=0`) (around line 320 in the `else` branch).
+2.  The code has specific logic to update `last_token` for **Q-Block1** options.
+3.  The code also updates `last_token` for standard **BLOCK1** options when it is the **last block** (`m=0`).
 4.  **The Gap:** There is **no code** to update `last_token` for a standard **BLOCK1** option when the **"More" bit is set (`m=1`)**.
-5.  Under normal circumstances, an `m=1` packet simply triggers a 2.31 (Continue) response and returns. However, if the internal logic (`check_all_blocks_in`) determines that the full payload has been reassembled (e.g., due to packet reordering or specific size calculations), the code enters the completion handler block (around line 300).
+5.  Under normal circumstances, an `m=1` packet simply triggers a 2.31 (Continue) response and returns. However, if the internal logic (`check_all_blocks_in`) determines that the full payload has been reassembled (e.g., due to packet reordering or specific size calculations), the code enters the completion handler block.
 6.  Inside this block, at line 3108, the code unconditionally accesses `lg_srcv->last_token`:
     ```c
     // src/coap_block.c:3108
