@@ -5,7 +5,7 @@
 
 **Developer response:**
 
-![截屏2026-01-12 09.16.07](/Users/xyf/Desktop/截屏2026-01-12 09.16.07.png)
+![截屏2026-01-12 09.16.07](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image2026-01-12%2009.16.07.png)
 
 **Description:**
 When `rpki-client` parses an X.509 certificate that lacks the Authority Key Identifier (AKI) extension, the internal `cert->aki` member is set to `NULL`.
