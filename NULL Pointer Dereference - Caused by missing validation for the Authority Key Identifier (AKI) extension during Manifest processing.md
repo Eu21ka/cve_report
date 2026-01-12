@@ -130,6 +130,35 @@ rpki-client: not all files processed, giving up
 
 **Impact:**
 Processing a crafted repository containing a certificate missing the AKI extension crashes the parser process.
-
 The failure of a validator signifies the complete cessation of the entire RPKI validation process. Routers will entirely lose their ability to determine the legitimacy of IP prefixes, reverting to the unprotected state prior to RPKI deployment and becoming highly vulnerable to prefix hijacking attacks.
+**Official fix:**
+```c
+Index: parser.c
+===================================================================
+RCS file: /cvs/src/usr.sbin/rpki-client/parser.c,v
+diff -u -p -r1.173 parser.c
+--- parser.c	13 Nov 2025 15:18:53 -0000	1.173
++++ parser.c	9 Jan 2026 15:51:02 -0000
+@@ -589,6 +589,13 @@ proc_parser_cert(char *file, const unsig
+	if (cert == NULL)
+		goto out;
 
++	if (cert->purpose != CERT_PURPOSE_CA &&
++	    cert->purpose != CERT_PURPOSE_BGPSEC_ROUTER) {
++		warnx("%s: %s not allowed in a manifest", file,
++		    purpose2str(cert->purpose));
++		goto out;
++	}
++
+	a = find_issuer(file, entp->certid, cert->aki, entp->mftaki);
+	if (a == NULL)
+		goto out;
+@@ -892,6 +899,7 @@ parse_entity(struct entityq *q, struct i
+			/*
+			 * If entp->datasz == SHA256_DIGEST_LENGTH, we have a
+			 * cert added from a manifest, so it is not a root cert.
++			 * proc_parser_cert() will also make sure of this.
+			 */
+			if (entp->data != NULL &&
+			    entp->datasz != SHA256_DIGEST_LENGTH) {
+```
