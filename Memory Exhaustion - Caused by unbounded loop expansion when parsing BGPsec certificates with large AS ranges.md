@@ -1,7 +1,5 @@
 ### Developer response
-![image-20260112091135031](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image-20260112091135031.png)
-
-**Official fix:**
+![image-20260112091135031](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image-20260112091135031.png)**Official fix:**
 
 ```c
 Index: cert.c
@@ -48,7 +46,6 @@ sbgp_parse_assysnum(const char *fn, const ASIdentifiers *asidentifiers,
 **Location:** `src/cert.c` function `cert_insert_brks`
 
 **Description:**
-
 When parsing a BGPsec Router Certificate containing a `sbgp-autonomousSysNum` extension, `rpki-client` attempts to fully expand the defined AS number range into individual memory nodes within a Red-Black Tree.
 
 If a certificate defines an extremely large range (e.g., `min=0` to `max=4294967295`), the validation logic in `cert_insert_brks` enters an unbounded loop:
