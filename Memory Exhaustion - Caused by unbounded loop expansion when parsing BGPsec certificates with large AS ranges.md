@@ -4,7 +4,7 @@
 **Location:** `src/cert.c` function `cert_insert_brks`
 
 **Developer response**
-[![image-20260112091135031](./Vulnerability 1- Memory Exhaustion via BGPsec AS Range Expansion.assets/image-20260112091135031.png)](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image-20260112091135031.png)
+![image-20260112091135031](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image-20260112091135031.png)
 
 **Description:**
 When parsing a BGPsec Router Certificate containing a `sbgp-autonomousSysNum` extension, `rpki-client` attempts to fully expand the defined AS number range into individual memory nodes within a Red-Black Tree.
