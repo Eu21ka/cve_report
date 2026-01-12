@@ -1,11 +1,50 @@
-### Memory Exhaustion via BGPsec AS Range Expansion
+### Developer response
+![image-20260112091135031](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image-20260112091135031.png)
+
+**Official fix:**
+
+```c
+Index: cert.c
+===================================================================
+RCS file: /cvs/src/usr.sbin/rpki-client/cert.c,v
+diff -u -p -r1.208 cert.c
+--- cert.c	1 Dec 2025 14:40:56 -0000	1.208
++++ cert.c	9 Jan 2026 15:54:29 -0000
+@@ -1354,6 +1354,15 @@ cert_as_inherit(const struct cert *cert)
+	return cert->ases[0].type == CERT_AS_INHERIT;
+}
+
++static int
++cert_has_one_as(const struct cert *cert)
++{
++	if (cert->num_ases != 1)
++		return 0;
++
++	return cert->ases[0].type == CERT_AS_ID;
++}
++
+int
+sbgp_parse_assysnum(const char *fn, const ASIdentifiers *asidentifiers,
+    struct cert_as **out_as, size_t *out_num_ases)
+@@ -1746,6 +1755,12 @@ cert_parse_extensions(const char *fn, st
+		if (cert_as_inherit(cert)) {
+			warnx("%s: RFC 8209, 3.1.3.5: BGPsec Router cert "
+			    "with inherit element", fn);
++			goto out;
++		}
++
++		if (!cert_has_one_as(cert)) {
++			warnx("%s: BGPsec Router certs with more than one "
++			    "AS number are not supported", fn);
+			goto out;
+		}
+	}
+```
+
+### Vulnerability report
 
 **Type:** Resource Exhaustion / Denial of Service
 **Location:** `src/cert.c` function `cert_insert_brks`
-
-**Developer response**
-![image-20260112091135031](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image-20260112091135031.png)
-
 **Description:**
 When parsing a BGPsec Router Certificate containing a `sbgp-autonomousSysNum` extension, `rpki-client` attempts to fully expand the defined AS number range into individual memory nodes within a Red-Black Tree.
 
