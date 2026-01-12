@@ -1,8 +1,7 @@
 ### Developer response
 
-![截屏2026-01-12 09.16.07](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image2026-01-12%2009.16.07.png)
+![截屏2026-01-12 09.16.07](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image2026-01-12%2009.16.07.png)**Official fix:**
 
-**Official fix:**
 ```c
 Index: parser.c
 ===================================================================
@@ -39,6 +38,12 @@ diff -u -p -r1.173 parser.c
 **Type:** NULL Pointer Dereference / Segmentation Fault
 
 **Location:** `src/parser.c` function `find_issuer`
+
+**Impact:**
+
+Processing a crafted repository containing a certificate missing the AKI extension crashes the parser process.
+
+The failure of a validator signifies the complete cessation of the entire RPKI validation process. Routers will entirely lose their ability to determine the legitimacy of IP prefixes, reverting to the unprotected state prior to RPKI deployment and becoming highly vulnerable to prefix hijacking attacks.
 
 **Description:**
 When `rpki-client` parses an X.509 certificate that lacks the Authority Key Identifier (AKI) extension, the internal `cert->aki` member is set to `NULL`.
@@ -161,6 +166,5 @@ rpki-client: not all files processed, giving up
 ==28389==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
 ```
 
-**Impact:**
-Processing a crafted repository containing a certificate missing the AKI extension crashes the parser process.
-The failure of a validator signifies the complete cessation of the entire RPKI validation process. Routers will entirely lose their ability to determine the legitimacy of IP prefixes, reverting to the unprotected state prior to RPKI deployment and becoming highly vulnerable to prefix hijacking attacks.
+
+
