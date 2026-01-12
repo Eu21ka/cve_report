@@ -1,4 +1,4 @@
-### Developer response:
+### Developer response
 
 ![截屏2026-01-12 09.16.07](https://picture-1312228068.cos.ap-shanghai.myqcloud.com/image2026-01-12%2009.16.07.png)
 
