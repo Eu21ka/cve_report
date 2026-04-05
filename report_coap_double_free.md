@@ -4,7 +4,7 @@
 |-------|--------|
 | **Type** | CWE-362: Race Condition → CWE-415 Double Free / CWE-416 Use After Free |
 | **Severity** | **High** — Remote Denial of Service (crash), potential Remote Code Execution |
-| **Affected Version** | ibcoap `develop` branch, commit `e774e2e7` (v4.3.5-261) |
+| **Affected Version** | libcoap `develop` branch, commit `e774e2e7` (v4.3.5-261) |
 | **Root Cause** | TOCTOU race in `epoll_wait()`/`select()` global lock release (`coap_io_posix.c:469/326`) |
 
 ---
